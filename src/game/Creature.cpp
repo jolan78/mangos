@@ -253,10 +253,10 @@ bool Creature::UpdateEntry(uint32 Entry, uint32 team, const CreatureData *data )
     else
         SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, GetCreatureInfo()->faction_A);
 
-    if(cinfo->npcflag & UNIT_NPC_FLAG_WORLDEVENT)
-        SetUInt32Value(UNIT_NPC_FLAGS,cinfo->npcflag | gameeventmgr.GetNPCFlag(this));
+    if(GetCreatureInfo()->npcflag & UNIT_NPC_FLAG_WORLDEVENT)
+        SetUInt32Value(UNIT_NPC_FLAGS,GetCreatureInfo()->npcflag | gameeventmgr.GetNPCFlag(this));
     else
-        SetUInt32Value(UNIT_NPC_FLAGS,cinfo->npcflag);
+        SetUInt32Value(UNIT_NPC_FLAGS,GetCreatureInfo()->npcflag);
 
     SetAttackTime(BASE_ATTACK,  GetCreatureInfo()->baseattacktime);
     SetAttackTime(OFF_ATTACK,   GetCreatureInfo()->baseattacktime);
