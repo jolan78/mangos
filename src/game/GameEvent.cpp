@@ -216,16 +216,16 @@ void GameEvent::LoadFromDB()
         pGameEvent.end          = time_t(endtime);
         pGameEvent.occurence    = fields[3].GetUInt32();
         pGameEvent.length       = fields[4].GetUInt32();
+        pGameEvent.state        = (GameEventState)(fields[6].GetUInt8());
+        pGameEvent.nextstart    = 0;
 
-        if(pGameEvent.length==0)                            // length>0 is validity check
+        if(pGameEvent.length==0 && !pGameEvent.state)                            // length>0 and not world_event is validity check
         {
             sLog.outErrorDb("`game_event` game event id (%i) have length 0 and can't be used.",event_id);
             continue;
         }
 
         pGameEvent.description  = fields[5].GetCppString();
-        pGameEvent.state        = (GameEventState)(fields[6].GetUInt8());
-        pGameEvent.nextstart    = 0;
 
     } while( result->NextRow() );
 
