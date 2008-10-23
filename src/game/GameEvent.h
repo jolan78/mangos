@@ -62,7 +62,7 @@ struct GameEventData
     std::set<uint16 /*gameevent id*/> prerequisite_events;  // events that must be completed before starting this event
     std::string description;
 
-    bool isValid() const { return length > 0; }
+    bool isValid() const { return (length > 0 || state > 0); }
 };
 
 struct ModelEquip
