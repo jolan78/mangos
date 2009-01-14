@@ -1235,6 +1235,18 @@ bool GameEvent::hasGameObjectActiveEventExcept(uint32 go_id, uint16 event_id)
     return false;
 }
 
+void GameEvent::ReloadEventQuests()
+{
+    for (uint16 itr = 1; itr < mGameEvent.size(); ++itr)
+    {
+        if (IsActiveEvent(itr))
+        {
+            UpdateEventQuests(itr, true);
+            UpdateEventNPCFlags(itr);
+        }
+    }
+}
+
 void GameEvent::UpdateEventQuests(uint16 event_id, bool Activate)
 {
     QuestRelList::iterator itr;
