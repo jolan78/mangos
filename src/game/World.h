@@ -482,6 +482,8 @@ class World
         void UpdateResultQueue();
         void InitResultQueue();
 
+        void ForceGameEventUpdate();
+
         void UpdateRealmCharCount(uint32 accid);
 
         LocaleConstant GetAvailableDbcLocale(LocaleConstant locale) const { if(m_availableDbcLocaleMask & (1 << locale)) return locale; else return m_defaultDbcLocale; }
