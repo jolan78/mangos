@@ -814,15 +814,11 @@ void Creature::sendPreparedGossip(Player* player)
     if(!player)
         return;
 
-	// in case no gossip flag and quest menu not empty, open quest menu (client expect gossip menu with this flag)
-    if (!HasFlag(UNIT_NPC_FLAGS,UNIT_NPC_FLAG_GOSSIP) && !player->PlayerTalkClass->GetQuestMenu().Empty())
-      GossipMenu& gossipmenu = player->PlayerTalkClass->GetGossipMenu();
-
-    if(this->HasFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_WORLDEVENT)) // if world event npc then
+	if(this->HasFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_WORLDEVENT)) // if world event npc then
         gameeventmgr.HandleWorldEventGossip(player, this);      // update world state with progress
 
-    // in case empty gossip menu open quest menu if any
-    if (gossipmenu.Empty() && GetNpcTextId() == 0)
+    // in case no gossip flag and quest menu not empty, open quest menu (client expect gossip menu with this flag)
+    if (!HasFlag(UNIT_NPC_FLAGS,UNIT_NPC_FLAG_GOSSIP) && !player->PlayerTalkClass->GetQuestMenu().Empty())
     {
         player->SendPreparedQuest(GetGUID());
         return;
