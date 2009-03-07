@@ -1580,6 +1580,14 @@ void World::Update(uint32 diff)
     ProcessCliCommands();
 }
 
+void World::ForceGameEventUpdate()
+{
+    m_timers[WUPDATE_EVENTS].Reset();                   // to give time for Update() to be processed
+    uint32 nextGameEvent = gameeventmgr.Update();
+    m_timers[WUPDATE_EVENTS].SetInterval(nextGameEvent);
+    m_timers[WUPDATE_EVENTS].Reset();
+}
+
 /// Put scripts in the execution queue
 void World::ScriptsStart(ScriptMapMap const& scripts, uint32 id, Object* source, Object* target)
 {

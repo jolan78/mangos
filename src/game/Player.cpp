@@ -59,6 +59,7 @@
 #include "Spell.h"
 #include "SocialMgr.h"
 #include "AchievementMgr.h"
+#include "GameEventMgr.h"
 
 #include <cmath>
 
@@ -13878,8 +13879,11 @@ void Player::SendQuestReward( Quest const *pQuest, uint32 XP, Object * questGive
 {
     uint32 questid = pQuest->GetQuestId();
     sLog.outDebug( "WORLD: Sent SMSG_QUESTGIVER_QUEST_COMPLETE quest = %u", questid );
-    WorldPacket data( SMSG_QUESTGIVER_QUEST_COMPLETE, (4+4+4+4+4) );
+
+	WorldPacket data( SMSG_QUESTGIVER_QUEST_COMPLETE, (4+4+4+4+4) );
     data << uint32(questid);
+
+	gameeventmgr.HandleQuestComplete(questid);
 
     if ( getLevel() < sWorld.getConfig(CONFIG_MAX_PLAYER_LEVEL) )
     {
