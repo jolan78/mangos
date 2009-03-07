@@ -1380,6 +1380,20 @@ MANGOS_DLL_SPEC bool IsHolidayActive( HolidayIds id )
     return false;
 }
 
+bool GameEventMgr::hasCreatureQuestActiveEventExcept(uint32 quest_id, uint16 event_id)
+{
+	for(ActiveEvents::iterator e_itr = m_ActiveEvents.begin(); e_itr != m_ActiveEvents.end(); ++e_itr)
+	{
+       if((*e_itr) != event_id)
+		   for(QuestRelList::iterator itr = mGameEventCreatureQuests[*e_itr].begin();
+               itr != mGameEventCreatureQuests[*e_itr].end(); ++itr)
+              if(itr->second == quest_id)
+                 return true;
+     }
+     return false; 
+}
+
+
 void GameEventMgr::HandleQuestComplete(uint32 quest_id)
 {
     // translate the quest to event and condition
