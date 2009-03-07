@@ -220,6 +220,7 @@ void GameEventMgr::LoadFromDB()
         pGameEvent.occurence    = fields[3].GetUInt32();
         pGameEvent.length       = fields[4].GetUInt32();
 		pGameEvent.holiday_id   = fields[5].GetUInt32();
+		pGameEvent.description  = fields[6].GetCppString();
         pGameEvent.state        = (GameEventState)(fields[7].GetUInt8());
         pGameEvent.nextstart    = 0;
 
@@ -237,8 +238,7 @@ void GameEventMgr::LoadFromDB()
               pGameEvent.holiday_id = 0;
             }
        }
-       
-	   pGameEvent.description  = fields[5].GetCppString();
+      
 
         } while( result->NextRow() );
         delete result;
