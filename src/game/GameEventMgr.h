@@ -27,6 +27,7 @@
 
 class Creature;
 class GameObject;
+class Player;
 
 enum GameEventState
 {

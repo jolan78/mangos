@@ -94,7 +94,7 @@ uint32 GameEventMgr::NextCheck(uint16 entry) const
         return delay;
 }
 
-void GameEventMgr::StartEvent( uint16 event_id, bool overwrite )
+bool GameEventMgr::StartEvent( uint16 event_id, bool overwrite )
 {
     if(mGameEvent[event_id].state == GAMEEVENT_NORMAL)
     {
@@ -106,7 +106,7 @@ void GameEventMgr::StartEvent( uint16 event_id, bool overwrite )
             if(mGameEvent[event_id].end <= mGameEvent[event_id].start)
                 mGameEvent[event_id].end = mGameEvent[event_id].start+mGameEvent[event_id].length;
         }
-        return;
+        return false;
     }
     else
     {
@@ -129,7 +129,7 @@ void GameEventMgr::StartEvent( uint16 event_id, bool overwrite )
         if(overwrite && conditions_met)
             sWorld.ForceGameEventUpdate();
 
-        return;
+        return conditions_met;
     }
 }
 
@@ -229,7 +229,16 @@ void GameEventMgr::LoadFromDB()
             continue;
         }
 
-            pGameEvent.description  = fields[5].GetCppString();
+	  if(pGameEvent.holiday_id)
+       {
+          if(!sHolidaysStore.LookupEntry(pGameEvent.holiday_id))
+            {
+              sLog.outErrorDb("`game_event` game event id (%i) have not existed holiday id %u.",event_id,pGameEvent.holiday_id);
+              pGameEvent.holiday_id = 0;
+            }
+       }
+       
+	   pGameEvent.description  = fields[5].GetCppString();
 
         } while( result->NextRow() );
         delete result;
@@ -241,7 +250,6 @@ void GameEventMgr::LoadFromDB()
     // load game event saves
     //                                       0         1      2 
     result = CharacterDatabase.Query("SELECT event_id, state, UNIX_TIMESTAMP(next_start) FROM game_event_save");
->>>>>>> b499cc8735e15d014fb1aee81759fbdd30a9f4d2:src/game/GameEvent.cpp
 
     count = 0;
     if( !result )
@@ -269,17 +277,6 @@ void GameEventMgr::LoadFromDB()
                 sLog.outErrorDb("`game_event_save` game event id (%i) is out of range compared to max event id in `game_event`",event_id);
                 continue;
             }
-
-            if(pGameEvent.holiday_id)
-            {
-                if(!sHolidaysStore.LookupEntry(pGameEvent.holiday_id))
-                {
-                    sLog.outErrorDb("`game_event` game event id (%i) have not existed holiday id %u.",event_id,pGameEvent.holiday_id);
-                    pGameEvent.holiday_id = 0;
-                }
-            }
-
-            pGameEvent.description  = fields[6].GetCppString();
 
 			if(mGameEvent[event_id].state != GAMEEVENT_NORMAL)
             {
@@ -1266,20 +1263,6 @@ void GameEventMgr::ChangeEquipOrModel(int16 event_id, bool activate)
     }
 }
 
-void GameEventMgr::UpdateEventQuests(uint16 event_id, bool Activate)
-{
-    for(ActiveEvents::iterator e_itr = m_ActiveEvents.begin(); e_itr != m_ActiveEvents.end(); ++e_itr)
-    {
-        if((*e_itr) != event_id)
-            for(QuestRelList::iterator itr = mGameEventCreatureQuests[*e_itr].begin();
-                itr != mGameEventCreatureQuests[*e_itr].end();
-                ++ itr)
-                if(itr->second == quest_id)
-                    return;
-    }
-    return;
-}
-
 bool GameEventMgr::hasGameObjectQuestActiveEventExcept(uint32 quest_id, uint16 event_id)
 {
     for(ActiveEvents::iterator e_itr = m_ActiveEvents.begin(); e_itr != m_ActiveEvents.end(); ++e_itr)
@@ -1327,7 +1310,6 @@ bool GameEventMgr::hasGameObjectActiveEventExcept(uint32 go_id, uint16 event_id)
 }
 
 void GameEventMgr::UpdateEventQuests(uint16 event_id, bool Activate)
->>>>>>> b499cc8735e15d014fb1aee81759fbdd30a9f4d2:src/game/GameEvent.cpp
 {
     QuestRelList::iterator itr;
     for (itr = mGameEventCreatureQuests[event_id].begin();itr != mGameEventCreatureQuests[event_id].end();++itr)
